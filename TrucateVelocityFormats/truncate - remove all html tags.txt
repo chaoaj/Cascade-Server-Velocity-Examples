@@ -1,0 +1,26 @@
+#macro (truncate $content $truncatedText $maxWords)
+	#set ($contentSerialized = $_SerializerTool.serialize($content, true).replaceAll("[<][^<]*[>]", ""))
+	#set ($wordArray = $contentSerialized.split(" "))
+	#set ($count = 0 )
+
+	#set ($truncatedText = "" )
+	#foreach ($word in $wordArray )
+		#if ($count < $maxWords )
+			#set ($truncatedText = $truncatedText + $word)
+			#if ($count < $maxWords - 1)
+				#set ($truncatedText = $truncatedText + " ")
+			#else
+				#set ($truncatedText = $truncatedText + "...")
+			#end
+			#set ($count = $count + 1)
+		#end
+	#end
+#end
+
+#set ($pageContent = $_XPathTool.selectSingleNode($contentRoot, "/system-index-block/calling-page/system-page/page-xhtml"))
+#set ($maxWords = 10)
+#set ($truncatedText = "")
+#truncate ($pageContent $truncatedText $maxWords)
+
+<h2>Truncated text removed all HTML tags:</h2>
+${truncatedText}

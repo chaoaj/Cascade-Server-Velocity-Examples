@@ -1,0 +1,79 @@
+#macro (calculateHTMLtags $tagSection $tag $wordCount $maxWords $tagsTooMany $truncatedText)
+	## Determines if the HTML tag is part of the HTML structure included in the word limit
+	#if ($wordCount < $maxWords)
+		#set ($truncatedText = $truncatedText + $_StringTool.substringBefore($tagSection, ">") + ">")
+	#elseif ($tagCount > 0)
+		#if ($tag.startsWith("/") == false && $tag.endsWith("/") == false)
+			#set ($tagsTooMany = $tagsTooMany + 1)
+		#elseif ($tagsTooMany > 0 && $tag.startsWith("/") == true)
+			#set ($tagsTooMany = $tagsTooMany - 1)
+		#elseif ($tagsTooMany == 0 && $tag.startsWith("/") == true)
+			#set ($truncatedText = $truncatedText + $_StringTool.substringBefore($tagSection, ">") + ">")
+		#end
+	#end
+#end
+
+#macro (calculateWords $wordString $wordCount $maxWords $truncatedText)
+	## Determines what words are included in the word limit
+	#set ($sameLoop = 0)
+	#foreach ($word in $wordString)
+		#if ($word.trim() != "")
+			#set($wordCount = $wordCount + 1)
+		#end
+		#if($wordCount < $maxWords && $word.trim() != "")
+			#if ($sameLoop > 0)
+				#set ($truncatedText = $truncatedText + " " + $word)
+			#else
+				#set ($truncatedText = $truncatedText + $word)
+			#end
+			#set ($sameLoop = $sameLoop + 1)
+		#elseif ($wordCount < $maxWords && $word.trim() == "")
+			#set ($truncatedText = $truncatedText + " ")
+		#end
+
+	#end
+#end
+
+#macro (truncateHTMLContent $content $truncatedText $maxWords)
+	#set($contentSerialized = $_SerializerTool.serialize($content, true))
+	#set ($contentArray = $contentSerialized.split("[<]"))
+
+	#set ($wordCount = 0)
+	#set ($tagCount = 0)
+	#set ($tagsTooMany = 0)
+	#set ($sameLoop = 0)
+
+	## Content is parsed at each HTML tag
+	#foreach ($tagSection in $contentArray)
+		#if ($tag.startsWith("/") == true)
+			#set ($tagCount = $tagCount - 1)
+		#elseif ($tag.endsWith("/") == false)
+			#set ($tagCount = $tagCount + 1)  
+		#end
+
+		#if ($tagSection.startsWith("<") == false)
+			#set ($tagSection = "<" + $tagSection)
+		#end
+
+		#set ($tag = $_StringTool.substringAfter($_StringTool.substringBefore($tagSection, ">"), "<"))
+		#if ($tag != "")
+			#calculateHTMLtags ($tagSection $tag $wordCount $maxWords $tagsTooMany $truncatedText)
+		#end
+		#if ($wordCount < $maxWords)
+			#set ($actualWords = $_StringTool.substringAfter($tagSection, ">"))
+			#set ($words = $actualWords.split(" ", -1))
+			#set ($sameLoop = 0)
+			#calculateWords ($words $wordCount $maxWords $truncatedText)
+		#end	
+	#end
+#end
+
+## Set maximum number of words that should be displayed below
+#set ($maxWords = 150)
+#set ($pageContent = $_XPathTool.selectSingleNode($contentRoot, "/system-index-block/calling-page/system-page/page-xhtml"))
+#set ($truncatedText = "")
+
+#truncateHTMLContent ($pageContent $truncatedText $maxWords)
+
+<h2>Truncated text maintaining HTML structure:</h2>
+${truncatedText}
