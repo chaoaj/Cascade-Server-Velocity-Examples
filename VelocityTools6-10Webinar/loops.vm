@@ -1,0 +1,84 @@
+## pull in & serialize content from main WYSIWYG field on data definition
+#set ( $content = $_SerializerTool.serialize($_XPathTool.selectSingleNode($contentRoot,"//calling-page/system-page/system-data-structure/content"),true) )
+
+## display WYSIWYG content
+$!{content}
+
+## create 2 parallel lists
+#set ( $list1 = ["item 1","item 2","item 3","item 4","item 5"] )
+#set ( $list2 = ["value 1","value 2","value 3","value 4","value 5"] )
+
+<h3>Dealing with Iteration Logic:</h3>
+
+## demonstrating new $foreach properties
+#foreach ( $item in $list1 )
+	## use $foreach.count & $foreach.hasNext to determine how many items have been iterated
+	## and whether there are additional items remaining
+    <p>${foreach.count} -- ${item} | Has more? ${foreach.hasNext}</p>
+    
+    ## pre-6.10, the #break directive is not recognized
+    #if ( $foreach.count == 3 )
+		## once we hit the 3rd iteration, stop processing the current loop
+        #break
+    #end
+#end
+
+<h3>Synchronized Lists</h3>
+
+## as of 6.10, there are more robust native count, index, and hasNext properties
+#foreach ( $item in $list1 )
+	## note that $foreach.index is zero-based & can be used to reference items at 
+	## corresponding indexes of parallel lists.  here, we access the corresponding
+	## value in $list2 while iterating through $list1
+    <p>${item} -> ${list2.get($foreach.index)}</p>
+#end
+
+<h3>Problem With Named References in LoopTool</h3>
+#set ( $keys = ["first","second","third","fourth"] )
+#set ( $values = ["value 1","value 2","value 3","value 4"] )
+#foreach ( $key in $_LoopTool.watch($keys).sync($values,"myValue") )
+    <p>${key} -- ${_LoopTool.myValue}</p>
+#end
+
+
+<h3>Nested Loops, Natively:</h3>
+
+#*
+Velocity engine 1.7 includes more robust $foreach references, including the ability
+to specify specific loops within a nested structure:
+*#
+#foreach ( $item in $list1 )
+        <p>
+		## $foreach.count returns the count for the CURRENT loop
+        Outer count = ${foreach.count}, Inner count:
+        <ul>
+       
+        #foreach ( $value in $list2 )
+			## from within a nested loop, the containing loop structures are still
+			## accessible via the $foreach.parent reference:
+            #if ($foreach.parent.count == 2)
+                   #break
+            #end
+            <li>${foreach.count}</li>  
+        #end
+        </ul>
+    </p>
+#end
+
+<h3>Nested Loops, using LoopTool:</h3>
+#foreach ( $item in $_LoopTool.watch($list1,"outer") )
+    
+    
+    <p>
+        Outer count = $_LoopTool.getCount("outer"), Inner count:
+        <ul>
+       
+        #foreach ( $value in $_LoopTool.watch($list2,"inner") )
+            #if ($_LoopTool.getCount("outer") == 2)
+                   $_LoopTool.stop("inner")
+            #end
+            <li>${_LoopTool.getCount("inner")}</li>  
+        #end
+        </ul>
+    </p>
+#end

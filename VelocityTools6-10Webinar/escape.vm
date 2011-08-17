@@ -1,0 +1,23 @@
+## pull in & serialize content from main WYSIWYG field on data definition
+#set ( $content = $_SerializerTool.serialize($_XPathTool.selectSingleNode($contentRoot,"//calling-page/system-page/system-data-structure/content"),true) )
+
+## display WYSIWYG content
+$!{content}
+
+<h3>Escaping for XML:</h3>
+## pull in content from the "Short Value" field in the page data definition -- for true test, input
+## a value containing non-xml safe special characters
+#set ( $xmlText = $_XPathTool.selectSingleNode($contentRoot,"//calling-page/system-page/system-data-structure/short-val").value )
+
+## use xml() method to safely escape text for XML output
+<p>${_EscapeTool.xml($xmlText)}</p>
+
+<h3>Escaping for JavaScript:</h3>
+## pull in content from the "Longer Value" field in the page data definition -- for true test, input
+## a value containing double & single quotes, apostrophes, etc.
+#set ( $jsText = $_XPathTool.selectSingleNode($contentRoot,"//calling-page/system-page/system-data-structure/long-val").value )
+
+<script type="text/javascript">
+	## use javascript() method to safely escape text for JS output & insert into a JS alert
+    alert ("This is an alert: ${_EscapeTool.javascript($jsText)}");
+</script>

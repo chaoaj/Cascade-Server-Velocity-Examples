@@ -1,0 +1,36 @@
+## pull in & serialize content from main WYSIWYG field on data definition
+#set ( $content = $_SerializerTool.serialize($_XPathTool.selectSingleNode($contentRoot,"//calling-page/system-page/system-data-structure/content"),true) )
+
+## display WYSIWYG content
+$!{content}
+
+<h3>Displaying Items in a List</h3>
+
+## get a list of values from the "Short Value" field in the page data definition
+#set ( $shortValues = $_XPathTool.selectNodes($contentRoot,"//calling-page/system-page/system-data-structure/short-val") )
+
+## output the value of each element in the list, separated by a comma -- the last item should be appended with "and"
+<p>List items, separated by a comma:</p>
+<p>
+#* arguments:
+	1) the list of items
+	2) the delimiter
+	3) the delimiter for the LAST item
+	4) the specific property of each list item to display
+*#
+${_DisplayTool.list($shortValues,", "," and ","value")}
+</p>
+
+<h3>Display Logic Based on the Number of Items in a List</h3>
+
+## capture the total number of items in our list
+#set ( $num = $shortValues.size() )
+
+#* use plural() method to output the appropriate form of words, depending on whether our list
+ 	contains more than one item.
+	arguments:
+	1) a number, which will determine whether the singular or plural form is required
+	2) the singular form of the word
+	3) [optional] the plural form of the word
+*#
+<p>There ${_DisplayTool.plural($num,"is","are")} ${num} ${_DisplayTool.plural($num,"item")} in the list.</p>

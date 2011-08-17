@@ -1,0 +1,39 @@
+## pull in & serialize content from main WYSIWYG field on data definition
+#set ( $content = $_SerializerTool.serialize($_XPathTool.selectSingleNode($contentRoot,"//calling-page/system-page/system-data-structure/content"),true) )
+
+## display WYSIWYG content
+$!{content}
+
+<h3>Getting a Real Number</h3>
+
+## extract text containing a numeric value from the page data definition
+#set ( $numAsText = $_XPathTool.selectSingleNode($contentRoot,"//calling-page/system-page/system-data-structure/short-val").value )
+## use MathTool to convert numeric text to real number
+#set ( $realNumber = $_MathTool.toInteger($numAsText) )
+
+<p>Text Number = ${numAsText}</p>
+#* MathTool methods fail "gracefully" -- meaning that if an exception is encountered, 
+	such as non-numeric content in $numAsText, the method simply returns null.
+	With this in mind, we can use another tool, DisplayTool, to create alternative
+	output in cases where our $realNumber cannot be generated:
+*#
+<p>Real Number = ${_DisplayTool.alt($realNumber,"Not a valid number.")}</p>
+## perform addition operation with a real number
+#set ( $realNumber = $realNumber + 5 )
+## perform addition operation with numeric text
+#set ( $numAsText = $numAsText + 5 )
+<p>Real Number + 5 = ${realNumber}</p>
+<p>Text Number + 5 = ${numAsText}</p>
+
+#set ( $numbers = [23,42,26.3,21,67,89] )
+## use MathTool to calculate the average value of a list of numbers
+#set ( $average = $_MathTool.getAverage($numbers) )
+## use MathTool to calculate the total value of a list of numbers
+#set ( $total = $_MathTool.getTotal($numbers) )
+<p>Total = ${total}</p>
+<p>Average = ${average}</p><br/>
+## additional MathTool operations:
+<p>Ceiling of total = ${_MathTool.ceil($total)}</p>
+<p>Floor of total = ${_MathTool.floor($total)}</p>
+<p>Average, rounded = ${_MathTool.round($average)}</p>
+<p>Average, rounded to 2 decimals = ${_MathTool.roundTo(2,$average)}</p>

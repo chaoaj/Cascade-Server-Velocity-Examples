@@ -1,0 +1,17 @@
+## pull in & serialize content from main WYSIWYG field on data definition
+#set ( $content = $_SerializerTool.serialize($_XPathTool.selectSingleNode($contentRoot,"//calling-page/system-page/system-data-structure/content"),true) )
+
+## display WYSIWYG content
+$!{content}
+
+<h3>Formatting Number Values</h3>
+
+## extract text containing a numeric value from the page data definition
+#set ( $numAsText = $_XPathTool.selectSingleNode($contentRoot,"//calling-page/system-page/system-data-structure/short-val").value )
+## use MathTool to convert numeric text to real number
+#set ( $realNumber = $_MathTool.toDouble($numAsText) )
+
+## use NumberTool to format as percentage
+<p>Percentage = ${_NumberTool.percent($realNumber)}</p>
+## use NumberTool to format as currency
+<p>Currency = ${_NumberTool.currency($realNumber)}</p>
