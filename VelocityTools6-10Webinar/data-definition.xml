@@ -1,0 +1,5 @@
+<system-data-structure>
+  <text wysiwyg="true" identifier="content" label="Page Content"/>
+  <text identifier="short-val" label="Short Value" multiple="true"/>
+  <text multi-line="true" identifier="long-val" label="Longer Value" multiple="true"/>
+</system-data-structure>
