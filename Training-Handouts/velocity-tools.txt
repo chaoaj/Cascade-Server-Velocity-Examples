@@ -2,14 +2,14 @@
 http://www.hannonhill.com/kb/Script-Formats
 
 $contentRoot		JDOM Element containing the XML supplied for the current region.
-					This content could be coming from a block or the page's own structured data or xml.
-					To view the raw XML, simply apply no Format to that region.
+			This content could be coming from a block or the page's own structured data or xml.
+			To view the raw XML, simply apply no Format to that region.
 
 
-$_XPathTool			Tool used to access data in an XML data structure using the XPath language.
+$_XPathTool		Tool used to access data in an XML data structure using the XPath language.
 $_SerializerTool	Tool used to serialize an XML data structure to text.
-$_DateTool			Tool used to manipulate numeric date values.
-$_SortTool			Tool used to sort collections of JDOM Elements.
+$_DateTool		Tool used to manipulate numeric date values.
+$_SortTool		Tool used to sort collections of JDOM Elements.
 $_StringTool		Tool containing useful string manipulation methods.
 
 
@@ -17,14 +17,14 @@ $_XPathTool.selectSingleNode($scope, $expression)
 $_XPathTool.selectNodes($scope, $expression)
 
 	Filtering
-		not(bool)					Returns opposite boolean
-		contains(node, string)		Returns boolean value of finding the string in the value of the node
+	not(bool)			Returns opposite boolean
+	contains(node, string)		Returns boolean value of finding the string in the value of the node
 
 $reference.getChild()
 $reference.getChild().value
 
 $reference.getAttribute("attribute-name")	Returns a reference to the attribute.
-$reference.getName()						Returns a string that is the name of the XML node referenced.
+$reference.getName()				Returns a string that is the name of the XML node referenced.
 
 
 $_SerializerTool.serialize($node, true)
@@ -33,11 +33,11 @@ First argument - any JDOM Element.
 Second argument - boolean determines whether or not the XML node for the first argument is removed from the output.
 
 
-.getDate()							Creates a Java Date Object to be used.
-$_DateTool.getDate()				Uses UNIX timestamp of right now.
+.getDate()				Creates a Java Date Object to be used.
+$_DateTool.getDate()			Uses UNIX timestamp of right now.
 $_DateTool.getDate($node.value)		Uses UNIX timestamp of referenced node.
 
-.format()							Converts UNIX timestamp to custom readable format.
+.format()				Converts UNIX timestamp to custom readable format.
 $_DateTool.format($format, $obj)
 $_DateTool.format("MEDIUM", $obj)
 $_DateTool.format("EEEE, MMMM dd, yyyy G hh:mm:ss a Z", $obj)
@@ -45,7 +45,7 @@ http://download.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html
 
 
 .addSortCriterion()		Criteria for sorting
-.sort()					JDOM elements to sort based on criteria
+.sort()				JDOM elements to sort based on criteria
 
 $_SortTool.addSortCriterion($expression, $language, $type, $order, $case)
 $_SortTool.sort($list)
