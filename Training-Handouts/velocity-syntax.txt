@@ -24,7 +24,7 @@ A sentence with a {$foo}variable.
 #set ( $size = "Big" )			#set ( $size = "Big" )
 #set ( $name = "Ben" )			#set ( $name = "Ben" )
 The clock is $size$name.		#set ( $clock = "$size$name" )
-								The clock is $clock.
+					The clock is $clock.
 
 #set ( $dir = "www" )
 #set ( $page = "index.html" )
@@ -59,11 +59,11 @@ The clock is $size$name.		#set ( $clock = "$size$name" )
     <strong>Go West</strong>
 #end
 
-#if ( $foo ) #end					## False
-#if ( !$foo ) #end					## True
+#if ( $foo ) #end			## False
+#if ( !$foo ) #end			## True
 #if ( $foo && $foo.value ) #end		## False and $foo.value will not be evaluated
 #if ( $foo && $foo == "bar" ) #end	## False and $foo == "bar" wil not be evaluated
-#if ( $foo1 || $foo2 ) #end			## False $foo1 and $foo2 are not defined
+#if ( $foo1 || $foo2 ) #end		## False $foo1 and $foo2 are not defined
 
 #if ( $foo && $bar )
    <strong> This AND that</strong>
