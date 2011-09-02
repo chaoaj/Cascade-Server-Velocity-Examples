@@ -1,0 +1,104 @@
+
+http://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html
+
+## This is a single line comment.
+#*
+ Thus begins a multi-line comment. You won't
+ see this text because the VTE will ignore it.
+*#
+
+
+#set ( $foo = "Velocity" )
+<html>
+<body>
+Hello $foo World!
+</body>
+<html>
+
+${foo}
+${foo.value}
+${foo.bar()}
+A sentence with a $foovariable.
+A sentence with a {$foo}variable.
+
+#set ( $size = "Big" )			#set ( $size = "Big" )
+#set ( $name = "Ben" )			#set ( $name = "Ben" )
+The clock is $size$name.		#set ( $clock = "$size$name" )
+								The clock is $clock.
+
+#set ( $dir = "www" )
+#set ( $page = "index.html" )
+#set ( $path = "/$dir/$page" )
+
+<input type="text" name="email" value="$email"/>
+<input type="text" name="email" value="$!email"/>
+<input type="text" name="email" value="${email}"/>
+<input type="text" name="email" value="$!{email}"/>
+
+
+#set ( $value = $foo + 1 )
+#set ( $value = $bar - 1 )
+#set ( $value = $foo * $bar )
+#set ( $value = $foo / $bar )
+#set ( $foo = $bar % 5 )
+
+
+#set ( $variable = $reference.method("node") )
+
+
+#if ( $foo )
+   <strong>Velocity!</strong>
+#end
+#if ( $foo < 10 )
+    <strong>Go North</strong>
+#elseif ( $foo == 10 )
+    <strong>Go East</strong>
+#elseif ( $bar == 11 )
+    <strong>Go South</strong>
+#else
+    <strong>Go West</strong>
+#end
+
+#if ( $foo ) #end					## False
+#if ( !$foo ) #end					## True
+#if ( $foo && $foo.value ) #end		## False and $foo.value will not be evaluated
+#if ( $foo && $foo == "bar" ) #end	## False and $foo == "bar" wil not be evaluated
+#if ( $foo1 || $foo2 ) #end			## False $foo1 and $foo2 are not defined
+
+#if ( $foo && $bar )
+   <strong> This AND that</strong>
+#end
+#if ( $foo || $bar )
+    <strong>This OR That</strong>
+#end
+#if ( !$foo )
+  <strong>NOT that</strong>
+#end
+
+
+<ul>
+#foreach ( $item in $list )
+    <li>$item</li>
+#end
+</ul>
+#foreach ( $foo in [1..5] )
+	$foo
+#end
+#foreach ( $bar in [2..-2] )
+	$bar
+#end
+
+$array.isEmpty()
+$array.size()
+
+
+#macro ( tablerows $list )
+	#foreach ( $item in $list )
+	    <tr><td>$item</td></tr>
+	#end
+#end
+<table>
+    #tablerows( $myList )
+</table>
+
+
